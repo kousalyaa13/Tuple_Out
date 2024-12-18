@@ -158,6 +158,41 @@ def play_game():
     # calculate and display average scores
     calculate_statistics(score_history, player_1, player_2)
 
-# run the game
-if __name__ == "__main__":
-    play_game()
+# -------------------------
+# Commented-out Tests for All Functions
+# -------------------------
+
+# # test roll_dice function
+# print("Testing roll_dice:", roll_dice())  # Test with random dice rolls
+
+# # test check_tupled_rolls function
+# print("Testing check_tupled_rolls:", check_tupled_rolls([3, 3, 3], "Test Player"))  # Should return 0 (tupled out)
+# print("Testing check_tupled_rolls:", check_tupled_rolls([1, 2, 3], "Test Player"))  # Should return None (not tupled out)
+
+# # test check_fixed_rolls function
+# print("Testing check_fixed_rolls:", check_fixed_rolls([2, 2, 5]))  # Should return (2, 2) as fixed dice
+# print("Testing check_fixed_rolls:", check_fixed_rolls([1, 2, 3]))  # Should return an empty tuple
+
+# # test calculate_score function
+# print("Testing calculate_score:", calculate_score([3, 3, 5], (3,)))  # Should return 11 (sum of rolls)
+# print("Testing calculate_score:", calculate_score([2, 4, 6], (2,)))  # Should return 12 (sum of rolls)
+
+# # test reroll_decision function
+# rolls = [2, 2, 5]
+# fixed_dice = (2, 2)
+# print("Testing reroll_decision with rolls:", rolls, "and fixed dice:", fixed_dice)
+# print("Result of reroll_decision:", reroll_decision("Test Player", rolls, fixed_dice))
+
+# # test setup_game function
+# player_1, player_2, scores = setup_game()
+# print(f"Testing setup_game: player_1 = {player_1}, player_2 = {player_2}, scores = {scores}")
+
+# # test calculate_statistics function
+# score_history = pd.DataFrame({
+#     'Round': [1, 2],
+#     'Player1': [10, 15],
+#     'Player2': [12, 18],
+#     'Total Player1': [25, 40],
+#     'Total Player2': [30, 50]
+# })
+# calculate_statistics(score_history, 'Player1', 'Player2')
