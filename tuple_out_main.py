@@ -72,12 +72,14 @@ def reroll_decision(player_name, rolls, fixed_dice):
                 return rolls  # return original rolls if timeout occurs
 
             # ask for the player's decision
-            reroll_choice = input(f"\n{player_name}, would you like to reroll your dice? Enter 'yes' to reroll or 'no' to keep your current rolls: ").lower()
-
-            # handle invalid input
-            if reroll_choice not in ['yes', 'no']:
-                print("Invalid choice. Please enter 'yes' or 'no'.")
-                continue  # ask again for valid input
+            try:
+                reroll_choice = input(f"\n{player_name}, would you like to reroll your dice? Enter 'yes' to reroll or 'no' to keep your current rolls: ").lower()
+                # handle invalid input
+                if reroll_choice not in ['yes', 'no']:
+                    raise ValueError("Invalid choice. Please enter 'yes' or 'no'.")
+            except ValueError as e:
+                        print(f"Error: {e}")
+                        continue  # ask user again for valid input
 
             if reroll_choice == "yes":
                 # reroll only non-fixed dice
@@ -124,10 +126,24 @@ def setup_game():
     """
     get the player names and initialize the game state.
     """
-    player_1 = input("Player 1, enter your name: ").strip()
-    player_2 = input("Player 2, enter your name: ").strip()
-    scores = {player_1: 0, player_2: 0}
-    return player_1, player_2, scores
+    try:
+        player_1 = input("Player 1, enter your name: ").strip()
+        if not player_1:
+            raise ValueError("Player 1's name cannot be empty.")
+        
+        player_2 = input("Player 2, enter your name: ").strip()
+        if not player_2:
+            raise ValueError("Player 2's name cannot be empty.")
+        
+        if player_1 == player_2:
+            raise ValueError("Players cannot have the same name.")
+        
+        scores = {player_1: 0, player_2: 0}
+        return player_1, player_2, scores
+    
+    except ValueError as e:
+        print(f"Error: {e}")
+        return setup_game()  # restart game setup if the input is invalid
 
 # game statistics using pandas
 def calculate_statistics(score_history, player_1, player_2):
