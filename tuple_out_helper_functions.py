@@ -1,4 +1,10 @@
 import random
+# added features:
+# if the user spends too much time on an answer they don't get to reroll, show a counter
+# when doing the roll use the time function to make it seem like it is taking some time to roll
+# need to add tests for all the functions
+# comment out the tests and add docstrings
+# add pandas, seaborn, and/or time, 5 points for each feature, max 10 points
 
 # store randomly rolled dice values in lists for each player
 # create a function instead of manual player rolls
