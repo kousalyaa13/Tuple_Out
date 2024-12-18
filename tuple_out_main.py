@@ -2,14 +2,18 @@ import random
 import time
 import pandas as pd
 
-TIMEOUT = 30  # timeout for player decision
-TARGET_SCORE = 30  # target score to win the game
+# game rules dictionary
+game_settings = {
+    'TARGET_SCORE': 30,
+    'TIMEOUT': 30,
+    'NUM_DICE': 3
+}
 
 def roll_dice():
     """
     simulate rolling three dice and return the results as a list.
     """
-    return random.choices(range(1, 7), k=3)
+    return random.choices(range(1, 7), k=game_settings['NUM_DICE'])
 
 def check_tupled_rolls(rolls, player_name):
     """
@@ -59,7 +63,7 @@ def reroll_decision(player_name, rolls, fixed_dice):
             print(f"Current rolls: {rolls}")
 
         # tell player about the timeout
-        print(f"\n{player_name}, you have {TIMEOUT} seconds to decide.")
+        print(f"\n{player_name}, you have {game_settings['TIMEOUT']} seconds to decide.")
 
         # start the timer for timeout
         start_time = time.time()
@@ -67,7 +71,7 @@ def reroll_decision(player_name, rolls, fixed_dice):
         # wait for player's decision, with timeout logic
         while True:
             elapsed_time = time.time() - start_time
-            if elapsed_time > TIMEOUT:
+            if elapsed_time > game_settings['TIMEOUT']:
                 print(f"\n{player_name} took too long to respond! No reroll allowed.")
                 return rolls  # return original rolls if timeout occurs
 
@@ -166,7 +170,7 @@ def play_game():
     round_number = 1
 
     # main game loop
-    while all(score < TARGET_SCORE for score in scores.values()):
+    while all(score < game_settings['TARGET_SCORE'] for score in scores.values()):
         round_scores = {'Round': round_number}
         
         for player in scores:
@@ -179,7 +183,7 @@ def play_game():
 
         # check if a player has reached the target score
         for player in scores:
-            if scores[player] >= TARGET_SCORE:
+            if scores[player] >= game_settings['TARGET_SCORE']:
                 print(f"\n{player} wins with {scores[player]} points!")
                 break
         else:
