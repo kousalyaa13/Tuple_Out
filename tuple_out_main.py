@@ -1,4 +1,5 @@
 import random
+import time
 
 # import the helper functions
 from tuple_out_helper_functions import (
@@ -11,7 +12,12 @@ from tuple_out_helper_functions import (
 
 # handle a player's turn
 def player_turn(player_name, dice_rolls, current_score):
-    print(f"\n{player_name} is taking their turn...")
+    
+    print(f"\n{player_name} is rolling the dice...")
+    time.sleep(1)  # simulate a delay
+    
+    # roll the dice initially
+    rolls = roll_dice()
 
     # check if player tupled out
     round_score = check_tupled_rolls(dice_rolls, player_name)
