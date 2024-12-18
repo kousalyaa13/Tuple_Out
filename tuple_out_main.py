@@ -2,8 +2,8 @@ import random
 import time
 import pandas as pd
 
-TIMEOUT = 30  # Timeout for player decision
-TARGET_SCORE = 30  # Target score to win the game
+TIMEOUT = 30  # timeout for player decision
+TARGET_SCORE = 30  # target score to win the game
 
 def roll_dice():
     """
@@ -31,64 +31,87 @@ def calculate_score(rolls, fixed_dice):
     """
     calculate the score for the player based on the rolls and fixed dice.
     """
-    return sum(rolls)  # Add all rolls together for the score
+    return sum(rolls)  # add all rolls together for the score
 
-# Player Interaction Functions
 def reroll_decision(player_name, rolls, fixed_dice):
     """
-    handle the reroll decision for the player, with a timeout for the response.
+    handle the reroll decision for the player, with a timeout for the response and repeated rerolling logic
     """
+    is_done = False
+
+    # get the indices with fixed dice logic
     fixed_indices = [index for index, roll in enumerate(rolls) if roll in fixed_dice]
 
-    # Inform player about their current rolls and fixed dice
-    if fixed_dice:
-        print(f"{player_name}'s current rolls are {rolls}. Fixed dice are {fixed_dice}.")
-    else:
-        print(f"{player_name}'s current rolls are {rolls}.")
-    
-    print(f"\n{player_name}, you have {TIMEOUT} seconds to decide.")
+    while not is_done:
+        # check if current roll results in a tuple
+        round_score = check_tupled_rolls(rolls, player_name)
+        if round_score == 0:
+            print(f"{player_name}'s score this round: 0 (tupled out).")
+            return rolls
 
-    start_time = time.time()
+        # display current rolls and fixed dice if there are fixed dice
+        fixed_dice = check_fixed_rolls(rolls)
+        if fixed_dice:
+            print(f"Current rolls: {rolls}, Fixed dice: {fixed_dice}")
+            # update fixed indices
+            fixed_indices = [index for index, roll in enumerate(rolls) if roll in fixed_dice]
+        else:
+            print(f"Current rolls: {rolls}")
 
-    # wait for player's decision, with timeout
-    while True:
-        elapsed_time = time.time() - start_time
-        if elapsed_time > TIMEOUT:
-            print(f"\n{player_name} took too long to respond! No reroll allowed.")
-            return rolls  # Return original rolls if timeout occurs
+        # tell player about the timeout
+        print(f"\n{player_name}, you have {TIMEOUT} seconds to decide.")
 
-        reroll_choice = input(f"\n{player_name}, would you like to reroll your dice? Enter 'yes' to reroll or 'no' to keep your current rolls: ").lower()
-        if reroll_choice not in ['yes', 'no']:
-            print("Invalid choice. Please enter 'yes' or 'no'.")
-            continue  # Ask again for valid input
+        # start the timer for timeout
+        start_time = time.time()
 
-        if reroll_choice == "yes":
-            rerolled_dice = [
-                random.choice(range(1, 7)) if index not in fixed_indices else rolls[index]
-                for index in range(3)
-            ]
-            print(f"\n{player_name}'s new rolls after reroll: {rerolled_dice}")
-            return rerolled_dice
+        # wait for player's decision, with timeout logic
+        while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > TIMEOUT:
+                print(f"\n{player_name} took too long to respond! No reroll allowed.")
+                return rolls  # return original rolls if timeout occurs
 
-        print(f"\n{player_name} chose not to reroll. Rolls remain: {rolls}")
-        return rolls
+            # ask for the player's decision
+            reroll_choice = input(f"\n{player_name}, would you like to reroll your dice? Enter 'yes' to reroll or 'no' to keep your current rolls: ").lower()
 
-# main game loop functions
+            # handle invalid input
+            if reroll_choice not in ['yes', 'no']:
+                print("Invalid choice. Please enter 'yes' or 'no'.")
+                continue  # ask again for valid input
+
+            if reroll_choice == "yes":
+                # reroll only non-fixed dice
+                rolls = [
+                    random.choice(range(1, 7)) if index not in fixed_indices else rolls[index]
+                    for index in range(3)
+                ]
+                print(f"\n{player_name}'s new rolls after reroll: {rolls}")
+                break  # allow the loop to continue for another reroll if needed
+
+            # if the player chooses 'no', stop rerolling
+            print(f"\n{player_name} chose not to reroll. Rolls remain: {rolls}")
+            is_done = True
+            return rolls
+
+
 def player_turn(player_name, current_score):
     """
-    handle a player's turn, including dice rolls, rerolls, and score calculation.
+    Handle a player's turn, including dice rolls, rerolls, and score calculation.
     """
     print(f"\n{player_name} is rolling the dice...")
-    time.sleep(1)  # simulate a delay
+    time.sleep(1)  # simulate a delay for realism
 
-    rolls = roll_dice()  # roll the dice
+    rolls = roll_dice()  # initial dice roll
     round_score = check_tupled_rolls(rolls, player_name)
 
-    if round_score is None:
+    if round_score is None:  # check if not tupled out
         fixed_dice = check_fixed_rolls(rolls)
+        
+        # allow the player to reroll repeatedly until they decide to stop
         rolls = reroll_decision(player_name, rolls, fixed_dice)
 
-        round_score = check_tupled_rolls(rolls, player_name)  # recheck after reroll
+        # recheck for tupled out after reroll
+        round_score = check_tupled_rolls(rolls, player_name)
         if round_score is None:
             round_score = calculate_score(rolls, fixed_dice)  # calculate score if not tupled out
 
@@ -99,7 +122,7 @@ def player_turn(player_name, current_score):
 # initialize game and player setup
 def setup_game():
     """
-    Get the player names and initialize the game state.
+    get the player names and initialize the game state.
     """
     player_1 = input("Player 1, enter your name: ").strip()
     player_2 = input("Player 2, enter your name: ").strip()
@@ -157,6 +180,9 @@ def play_game():
 
     # calculate and display average scores
     calculate_statistics(score_history, player_1, player_2)
+
+# run the game
+play_game()
 
 # -------------------------
 # Commented-out Tests for All Functions
