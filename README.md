@@ -1,7 +1,7 @@
 # 🎲 Tuple Out Dice Game
 
 ## 📋 Project Overview
-The **Tuple Out Dice Game** is a two-player game where players take turns rolling dice to accumulate points, aiming to reach the target score first. However, beware of "tuple out" situations where all dice show the same value, resulting in zero points for the round.
+The **Tuple Out Dice Game** is a two-player dice game where players take turns rolling to earn points and race to a target score. If all dice roll the same value—a “tuple out”—the player loses all points for that round, adding strategy and risk to every turn.
 
 ## 🕹️ Game Rules
 
